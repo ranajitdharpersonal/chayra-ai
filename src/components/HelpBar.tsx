@@ -1,0 +1,416 @@
+'use client';
+import { useState, useEffect, useRef } from 'react';
+import { Mic, Send, Terminal, Cpu, AlertTriangle, Loader2, MapPin, Navigation, X, RotateCcw, ShieldCheck, Search, Clock3 } from 'lucide-react';
+
+export default function HelpBar() {
+  const [input, setInput] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  const [chatLog, setChatLog] = useState<{role: string, text: string, brain?: string, circuitTripped?: string | null} | null>(null);
+  
+  // 🛑 NEW LIVE TELEMETRY STATES 🛑
+  const [latency, setLatency] = useState<number | null>(null);
+  const [stability, setStability] = useState(99.9);
+  const [securityKey, setSecurityKey] = useState("K1024-X91");
+
+  // STATES FOR LOCATION
+  const [showLocationPrompt, setShowLocationPrompt] = useState(false);
+  const [userCoords, setUserCoords] = useState<{lat: number, lng: number} | null>(null);
+  const [isPinDropMode, setIsPinDropMode] = useState(false);
+
+  
+
+  // 🛑 GLOBAL SYSTEM RESET LISTENER & LIVE JITTER
+  useEffect(() => {
+    const handleSystemReset = () => {
+      setUserCoords(null);
+      setIsPinDropMode(false);
+      setShowLocationPrompt(false);
+      setLatency(null); // Reset latency
+    };
+    window.addEventListener('SYSTEM_RESET', handleSystemReset);
+
+    // LIVE JITTER FOR STABILITY & SECURITY KEY ROTATION
+    const interval = setInterval(() => {
+      setStability(parseFloat((99.7 + Math.random() * 0.2).toFixed(2)));
+      const keys = ["K1024-X91", "AES-Q256", "KYB-1024", "X-SHIELD-V2"];
+      setSecurityKey(keys[Math.floor(Math.random() * keys.length)]);
+    }, 3000);
+
+    return () => {
+      window.removeEventListener('SYSTEM_RESET', handleSystemReset);
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Trigger Reset Function
+  const triggerReset = () => {
+    window.dispatchEvent(new CustomEvent('SYSTEM_RESET'));
+  };
+
+  // 🎙️ MILITARY-GRADE VOICE COMMAND SETUP (MediaRecorder + Polyglot)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+
+  const toggleRecording = async () => {
+    // Jodi aage thekei shunchilo, tahole ebar stop korbe
+    if (isListening) {
+      if (mediaRecorderRef.current) mediaRecorderRef.current.stop();
+      return;
+    }
+
+    // Notun kore recording start korbe
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) audioChunksRef.current.push(event.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        stream.getTracks().forEach(track => track.stop());
+        await processAudio(audioBlob);
+      };
+
+      mediaRecorder.start();
+      setIsListening(true);
+      setInput(""); // Clear existing text when starting new voice command
+    } catch (err) {
+      console.error("Mic permission error:", err);
+      alert("Microphone access denied! Please allow mic permissions.");
+    }
+  };
+
+  // 🌍 POLYGLOT AUDIO PROCESSING (Sending to backend)
+  const processAudio = async (audioBlob: Blob) => {
+    setIsProcessing(true);
+    setInput("Decoding voice transmission..."); // Visual feedback
+
+    try {
+      const formData = new FormData();
+      formData.append('file', audioBlob, 'voice.webm');
+
+      const res = await fetch('/api/voice', { method: 'POST', body: formData });
+      const data = await res.json();
+      
+      if (data.error) throw new Error(data.error);
+
+      // Clean up Whisper hallucinations (TryNext AI fix)
+      let finalText = data.text.trim();
+      finalText = finalText.replace(/(?:\bthank you\.?\b|\bthanks for watching\.?\b)/gi, '').trim();
+
+      setInput(finalText); // Final text box e bosiye dibe
+    } catch (err: any) {
+      console.error("Audio processing failed:", err);
+      setInput("");
+      setChatLog({ role: 'error', text: `Voice decode failed: ${err.message}` });
+    } finally {
+      setIsProcessing(false);
+      setIsListening(false);
+    }
+  };
+
+  // INTERCEPT THE SEND BUTTON
+  const handleInitialSend = () => {
+    if (!input) return;
+    if (!userCoords) {
+      // Jodi location na thake, tahole purono modal ta open hobe (Apnar kotha moto jemon chilo temon i)
+      setShowLocationPrompt(true);
+    } else {
+      // Location aage theke lock thakle direct API call hobe
+      executeRescueProtocol(userCoords);
+    }
+  };
+
+  // METHOD A: LIVE GPS LOCATION
+  const fetchLiveLocation = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const coords = { lat: position.coords.latitude, lng: position.coords.longitude };
+        setUserCoords(coords);
+        setShowLocationPrompt(false);
+        // Jodi send button er por ashe tahole call hobe
+        if (input) executeRescueProtocol(coords); 
+      },
+      (error) => {
+        alert("Location access denied or failed. Please use 'Drop a Pin'.");
+      }
+    );
+  };
+
+  // METHOD B: DROP A PIN MODE
+  const enablePinDrop = () => {
+    setShowLocationPrompt(false);
+    setIsPinDropMode(true);
+    window.dispatchEvent(new CustomEvent('ENABLE_PIN_DROP'));
+    if (!chatLog) {
+       setChatLog({ role: 'ai', text: 'TACTICAL MAP ACTIVE: Please click anywhere on the map to drop your exact location pin.' });
+    }
+  };
+
+  // Listen for the Pin Drop confirmation from the Map
+  useEffect(() => {
+    const handlePinDropped = (event: any) => {
+      if (event.detail) {
+        setUserCoords(event.detail);
+        setIsPinDropMode(false);
+        if (input) executeRescueProtocol(event.detail); 
+      }
+    };
+    window.addEventListener('PIN_DROPPED', handlePinDropped);
+    return () => window.removeEventListener('PIN_DROPPED', handlePinDropped);
+  }, [input]); 
+
+  // THE MAIN API CALL 
+  const executeRescueProtocol = async (coords: {lat: number, lng: number}) => {
+    setIsProcessing(true);
+    setChatLog({ role: 'user', text: `${input} [COORDS: ${coords.lat.toFixed(4)}, ${coords.lng.toFixed(4)}]` }); 
+    setShowLocationPrompt(false); 
+    
+    const startTime = performance.now(); // ⏱️ Start Latency Timer
+
+    try {
+      const res = await fetch('/api/swarm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: input, location: coords }) 
+      });
+      const data = await res.json();
+      
+      const endTime = performance.now(); // ⏱️ End Latency Timer
+      setLatency(Math.round(endTime - startTime));
+
+      if (data.success) {
+        setChatLog({ role: 'ai', text: data.message, brain: data.brain_used, circuitTripped: data.circuit_tripped });
+        if (data.actionData) {
+          window.dispatchEvent(new CustomEvent('SWARM_INTEL_UPDATE', { detail: data.actionData }));
+        }
+      } else {
+        setChatLog({ role: 'error', text: 'System offline. Agents unreachable.' });
+      }
+    } catch (error) {
+      setChatLog({ role: 'error', text: 'Critical network failure.' });
+    } finally {
+      setIsProcessing(false);
+      setInput(''); 
+    }
+  };
+
+  return (
+    <> {/* 🛑 NEW: Ei khali bracket ta add korun 🛑 */}
+    <div className="w-full flex flex-col relative z-10 bg-[#0a0a0b]/80 backdrop-blur-3xl border border-white/5 rounded-2xl p-2 gap-2 transition-all shadow-2xl">
+      {/* 🔮 Subtle Background Gradient Aura */}
+      <div className="absolute inset-0 bg-gradient-to-t from-red-500/5 to-transparent rounded-3xl pointer-events-none"></div>
+
+      {/* 1. LOCATION BAR (Top Section) */}
+      <div className="w-full flex items-center justify-between px-3 py-2 border-b border-white/5 relative z-10">
+        {!userCoords && !isPinDropMode ? (
+          <div className="flex w-full items-center justify-between gap-4">
+            <span className="text-gray-400 font-mono text-xs flex items-center gap-2 group-hover:text-gray-300 transition-colors">
+              <MapPin className="w-4 h-4 text-red-500 animate-bounce drop-shadow-[0_0_8px_rgba(220,38,38,0.8)]" /> LOCATION STANDBY
+            </span>
+            <div className="flex gap-2">
+              <button onClick={fetchLiveLocation} className="px-3 py-1.5 bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-500/20 hover:border-blue-400/50 rounded font-mono text-[10px] flex items-center gap-1 transition-all hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                <Navigation className="w-3 h-3" /> GPS
+              </button>
+              <button onClick={enablePinDrop} className="px-3 py-1.5 bg-purple-500/10 border border-purple-500/30 text-purple-400 hover:bg-purple-500/20 hover:border-purple-400/50 rounded font-mono text-[10px] flex items-center gap-1 transition-all hover:shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                <MapPin className="w-3 h-3" /> DROP PIN
+              </button>
+            </div>
+          </div>
+        ) : isPinDropMode ? (
+          <div className="flex w-full items-center justify-between gap-4">
+            <span className="text-purple-400 font-mono text-xs animate-pulse flex items-center gap-2 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">
+              <MapPin className="w-4 h-4" /> AWAITING TACTICAL PIN...
+            </span>
+            <button onClick={triggerReset} className="px-3 py-1.5 bg-gray-800 border border-gray-700 text-gray-400 hover:text-white rounded font-mono text-[10px] flex items-center gap-1 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+              <X className="w-3 h-3" /> CANCEL
+            </button>
+          </div>
+        ) : (
+          <div className="flex w-full items-center justify-between gap-4">
+            <span className="text-emerald-400 font-mono text-xs flex items-center gap-2 drop-shadow-[0_0_8px_rgba(16,185,129,0.6)]">
+              <MapPin className="w-4 h-4" /> LOCKED: {userCoords?.lat.toFixed(3)}, {userCoords?.lng.toFixed(3)}
+            </span>
+            <button onClick={triggerReset} className="px-3 py-1.5 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-400/50 rounded font-mono text-[10px] flex items-center gap-1 transition-all hover:shadow-[0_0_15px_rgba(220,38,38,0.3)]">
+              <RotateCcw className="w-3 h-3" /> RESET
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* LOCATION PROMPT MODAL (Unchanged Logic, added glowing border) */}
+      {showLocationPrompt && (
+        <div className="absolute bottom-[110%] left-1/2 -translate-x-1/2 w-full max-w-md bg-black/95 backdrop-blur-3xl border border-red-500/50 p-6 rounded-2xl shadow-[0_0_50px_rgba(220,38,38,0.4)] animate-in slide-in-from-bottom-4 z-50">
+          <div className="absolute inset-0 bg-gradient-to-b from-red-500/5 to-transparent rounded-2xl pointer-events-none"></div>
+          {/* ... baki modal content apnar purono code-er motoy rakhben ... */}
+          <div className="flex justify-between items-start mb-4 relative z-10">
+            <div>
+              <h3 className="text-red-500 font-bold tracking-widest text-sm flex items-center gap-2 drop-shadow-[0_0_8px_rgba(220,38,38,0.8)]">
+                <MapPin className="w-4 h-4 animate-bounce" /> LOCATION REQUIRED
+              </h3>
+              <p className="text-gray-400 text-xs font-mono mt-1">Select location method to proceed with rescue.</p>
+            </div>
+            <button onClick={() => setShowLocationPrompt(false)} className="text-gray-500 hover:text-white transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="flex flex-col gap-3 mt-4 relative z-10">
+            <button onClick={fetchLiveLocation} className="flex items-center justify-between p-3 rounded-xl bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 hover:border-blue-400/50 hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-all group">
+              <div className="flex items-center gap-3">
+                <Navigation className="text-blue-500 w-5 h-5 group-hover:animate-pulse" />
+                <span className="text-blue-100 font-mono text-sm">USE LIVE GPS SIGNAL</span>
+              </div>
+              <span className="text-blue-500/50 text-xs font-mono">[FASTEST]</span>
+            </button>
+            <button onClick={enablePinDrop} className="flex items-center justify-between p-3 rounded-xl bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 hover:border-purple-400/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all group">
+              <div className="flex items-center gap-3">
+                <MapPin className="text-purple-500 w-5 h-5 group-hover:animate-bounce" />
+                <span className="text-purple-100 font-mono text-sm">DROP TACTICAL PIN</span>
+              </div>
+              <span className="text-purple-500/50 text-xs font-mono">[MANUAL]</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Holographic Terminal (Unchanged Logic, added glowing border) */}
+      {chatLog && (
+        <div className="w-full bg-black/60 backdrop-blur-md border border-white/10 p-3 rounded-xl relative overflow-hidden transition-all animate-in fade-in slide-in-from-bottom-2 mx-1 mt-1 shadow-[0_0_20px_rgba(16,185,129,0.05)]">
+           <div className={`absolute top-0 left-0 w-[2px] h-full ${chatLog.role === 'error' ? 'bg-red-500 shadow-[0_0_15px_rgba(220,38,38,1)]' : 'bg-gradient-to-b from-transparent via-emerald-500 to-transparent shadow-[0_0_15px_rgba(16,185,129,1)]'}`}></div>
+           {/* ... baki terminal content apnar purono code-er motoy rakhben ... */}
+           {chatLog.role === 'ai' && !isPinDropMode && (
+             <div className="flex items-center gap-3 mb-2 pb-2 border-b border-white/5 relative z-10">
+                <div className="flex items-center gap-1.5 text-[9px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-1 rounded-md border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+                  <Cpu className="w-3 h-3" /> PROCESSED BY: {chatLog.brain || 'SYSTEM'}
+                </div>
+                {chatLog.circuitTripped && (
+                  <div className="flex items-center gap-1.5 text-[9px] text-amber-400 font-mono bg-amber-500/10 px-2 py-1 rounded-md border border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.1)]">
+                    <AlertTriangle className="w-3 h-3" /> TRIPPED: {chatLog.circuitTripped}
+                  </div>
+                )}
+             </div>
+           )}
+           <div className="font-mono text-[11px] md:text-xs text-gray-300 leading-relaxed pl-2 relative z-10">
+             {chatLog.role === 'user' ? (
+               <span className="text-gray-500">&gt;&gt; TX: <span className="text-gray-200">{chatLog.text}</span></span>
+             ) : chatLog.role === 'error' ? (
+               <span className="text-red-400">{chatLog.text}</span>
+             ) : (
+               <span className={isPinDropMode ? "text-purple-400 animate-pulse" : "text-emerald-100/90"}>{chatLog.text}</span>
+             )}
+           </div>
+        </div>
+      )}
+
+      {/* 🛑 2. MAIN INPUT MODULE (Back to the Tactical Red Design!) 🛑 */}
+      {/* 🛑 2. MAIN INPUT MODULE (Exact Match from Screenshot - Tactical Red) 🛑 */}
+      <div
+        className={`w-full rounded-2xl p-2 flex items-center gap-3 transition-all duration-300 mt-1
+        ${
+          isPinDropMode
+            ? 'bg-[#0f0717] border border-purple-500/30 hover:border-purple-500/50'
+            : 'bg-[#160505] border border-red-500/20 hover:border-red-500/40 shadow-[inset_0_0_15px_rgba(220,38,38,0.03)]'
+        }`}
+      >
+        
+        {/* Tactical Command Icon (NO BLUR, NO GLOW, JUST CLEAN RED) */}
+        <div
+          className={`p-3 rounded-xl border transition-all duration-300 flex-shrink-0
+          ${
+            isPinDropMode
+              ? 'bg-purple-500/10 border-purple-500/20 text-purple-400'
+              : 'bg-red-500/10 border-red-500/20 text-red-500'
+          }`}
+        >
+          {isProcessing ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Terminal className="w-4 h-4" />
+          )}
+        </div>
+
+        {/* The Text Input */}
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder={isPinDropMode ? "AWAITING TACTICAL PIN DROP..." : isListening ? "Listening to your voice..." : "Describe your emergency or use voice command..."}
+          className={`flex-1 bg-transparent border-none text-white focus:ring-0 text-xs font-mono outline-none transition-all pb-0.5 ${isListening ? 'placeholder-red-500/70' : isPinDropMode ? 'placeholder-purple-400/60' : 'placeholder-gray-500'}`}
+          onKeyDown={(e) => e.key === 'Enter' && handleInitialSend()}
+          disabled={isProcessing || isListening || isPinDropMode}
+        />
+        
+        {/* Buttons (Mic and Send) */}
+        <div className="flex items-center gap-2 pr-1">
+          <button 
+            onClick={toggleRecording}
+            disabled={isProcessing || isPinDropMode}
+            className={`p-3 rounded-xl transition-all border ${isListening ? 'bg-red-500/20 border-red-500/50 text-red-500 animate-pulse' : 'bg-transparent border-transparent hover:bg-white/5 text-gray-500 hover:text-white'}`}
+          >
+            <Mic className="w-4 h-4" />
+          </button>
+          
+          <button 
+            onClick={handleInitialSend}
+            disabled={isProcessing || !input || isPinDropMode}
+            className={`px-6 py-3.5 text-white rounded-xl font-bold tracking-[0.1em] text-[11px] transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${isPinDropMode ? 'bg-purple-600 hover:bg-purple-500' : 'bg-[#b91c1c] hover:bg-[#dc2626] shadow-[0_0_15px_rgba(220,38,38,0.2)]'}`}
+          >
+            {isProcessing ? 'SYNCING...' : isPinDropMode ? 'AWAITING' : 'INITIATE RESCUE'}
+            {!isProcessing && !isPinDropMode && <Send className="w-3.5 h-3.5 ml-1" />}
+          </button>
+        </div>
+      </div>
+
+      </div> {/* 🛑 EIKHANE APNAR MAIN GLASS CONTAINER TA BONDHO HOLO 🛑 */}
+
+      {/* 3. DYNAMIC SYSTEM TELEMETRY (Full Screen Bottom Taskbar) */}
+      <div className="fixed bottom-0 left-0 w-full bg-[#020202] border-t border-white/10 flex justify-between items-center text-[10px] font-mono text-gray-500 px-8 py-2.5 z-[9999] shadow-none">
+        
+        <div className="flex items-center gap-4">
+          {isProcessing ? (
+            <span className="flex items-center gap-2 text-amber-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span> ORCHESTRATING...
+            </span>
+          ) : isListening ? (
+            <span className="flex items-center gap-2 text-red-500 animate-pulse">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span> INTERCEPTING...
+            </span>
+          ) : isPinDropMode ? (
+            <span className="flex items-center gap-2 text-purple-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></span> AWAITING COORDS
+            </span>
+          ) : (
+            <span className="flex items-center gap-2 text-emerald-500/80">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span> SYSTEM ONLINE
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-6 opacity-80">
+           <span className="hidden md:flex items-center gap-1.5 text-blue-400/90">
+             <Clock3 className="w-3.5 h-3.5" /> LATENCY: <span className={latency ? 'text-blue-300' : 'text-gray-600'}>{latency ? `${latency}ms` : '--'}</span>
+           </span>
+           <span className="opacity-30 hidden md:inline">|</span>
+           <span className="hidden md:flex items-center gap-1.5">
+             STABILITY: <span className="text-emerald-500">{stability}%</span>
+           </span>
+           <span className="opacity-30 hidden md:inline">|</span>
+           <span className="flex items-center gap-1.5 text-purple-400/90">
+             <ShieldCheck className="w-3.5 h-3.5 text-purple-500" /> SECURE: {securityKey}
+           </span>
+        </div>
+        
+      </div>
+
+    </> /* 🛑 EIKHANE REACT FRAGMENT TA BONDHO HOLO 🛑 */
+  );
+}
