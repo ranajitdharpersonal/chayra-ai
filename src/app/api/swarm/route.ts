@@ -7,6 +7,7 @@ import { radarAgent } from '@/core/agents/radar';
 import { vaultAgent } from '@/core/agents/vault'; 
 import { mindguardAgent } from '@/core/agents/mindguard'; 
 import { verifierAgent } from '@/core/agents/verifier'; // 🛑 NEW IMPORT: VERIFIER
+import { askBrain } from '@/core/brain/brain'; // 🛑 NEW IMPORT: For Live Circuit Status
 
 export async function POST(request: Request) {
   try {
@@ -73,14 +74,17 @@ export async function POST(request: Request) {
     // 🛑 STEP 3: SYSTEM CONVERSATIONAL MESSAGE
     const systemMessage = `THREAT LEVEL: ${triageData.threatLevel}. Rescue protocols activated. Follow tactical intel on the panels.`;
 
+    // 🛑 NEW: FAST PING TO GET ACTIVE BRAIN & CIRCUIT STATUS
+    const sysPing = await askBrain("ping", "ping");
+
     // 🛑 STEP 4: SENDING DATA TO FRONTEND (Perfect JSON for HelpBar)
     return NextResponse.json({ 
       success: true, 
-      brain_used: "3-BRAIN SWARM", 
-      circuit_tripped: null, 
+      brain_used: sysPing.modelUsed, 
+      circuit_tripped: sysPing.circuitTripped, 
       message: systemMessage,
       actionData: {
-        intel: finalRadarIntel, // 🛑 UI te ebar Verified Radar Info jabe!
+        intel: finalRadarIntel, 
         route: routeData.text,
         destCoords: routeData.destCoords, 
         medical: medicalTips,

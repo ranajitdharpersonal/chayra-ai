@@ -132,12 +132,20 @@ export default function MapCore() {
       }
     };
 
+    const handleUpdateUserPin = (event: any) => {
+      setUserPin(event.detail);
+    };
+
     window.addEventListener('ENABLE_PIN_DROP', handleEnablePinDrop);
     window.addEventListener('SWARM_INTEL_UPDATE', handleIntelUpdate);
     
+    window.addEventListener('UPDATE_USER_PIN', handleUpdateUserPin);
+
     return () => {
       window.removeEventListener('ENABLE_PIN_DROP', handleEnablePinDrop);
       window.removeEventListener('SWARM_INTEL_UPDATE', handleIntelUpdate);
+
+      window.removeEventListener('UPDATE_USER_PIN', handleUpdateUserPin);
     };
   }, [userPin]);
 

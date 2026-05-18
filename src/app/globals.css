@@ -1,5 +1,31 @@
 @import "tailwindcss";
 
+/* 🛑 REMOVED @layer base - Now it forces the browser globally! 🛑 */
+
+/* Firefox Support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #333 #0a0a0a;
+}
+
+/* Chrome, Safari, Edge, Webkit Support */
+::-webkit-scrollbar {
+  width: 6px; 
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333; 
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981; 
+}
+
 body {
   background-color: black;
   color: white;

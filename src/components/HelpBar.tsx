@@ -18,6 +18,36 @@ export default function HelpBar() {
   const [userCoords, setUserCoords] = useState<{lat: number, lng: number} | null>(null);
   const [isPinDropMode, setIsPinDropMode] = useState(false);
 
+
+  // 🛑 NEW: LIVE AGENT TRACKER STATE 🛑
+  const [liveAgentLog, setLiveAgentLog] = useState("STANDBY...");
+
+  useEffect(() => {
+    if (!isProcessing) return;
+    
+    // Exact backend agent-der order onujayi log
+    const logs = [
+      "🛡️ [MindGuard]: Scanning intent for threats...",
+      "🕵️‍♂️ [Scavenger]: Extracting emergency context...",
+      "📡 [Radar]: Scanning perimeter for active crisis...",
+      "⚖️ [Verifier]: Cross-referencing intel...",
+      "⚕️ [Medical]: Analyzing trauma context...",
+      "🗺️ [Navigator]: Executing DUAL-SCAN routing...",
+      "🛡️ [Vault]: Securing identity beacon..."
+    ];
+    
+    let step = 0;
+    setLiveAgentLog(logs[0]);
+    
+    // Backend-e ~6.4s lagche, tai amra thik 900ms e update korbo! (900ms * 7 = 6.3s)
+    const interval = setInterval(() => {
+      step++;
+      if (step < logs.length) setLiveAgentLog(logs[step]);
+    }, 900); 
+
+    return () => clearInterval(interval);
+  }, [isProcessing]);
+
   
 
   // 🛑 GLOBAL SYSTEM RESET LISTENER & LIVE JITTER
@@ -137,6 +167,8 @@ export default function HelpBar() {
         const coords = { lat: position.coords.latitude, lng: position.coords.longitude };
         setUserCoords(coords);
         setShowLocationPrompt(false);
+
+        window.dispatchEvent(new CustomEvent('UPDATE_USER_PIN', { detail: coords }));
         // Jodi send button er por ashe tahole call hobe
         if (input) executeRescueProtocol(coords); 
       },
@@ -287,16 +319,34 @@ export default function HelpBar() {
         <div className="w-full bg-black/60 backdrop-blur-md border border-white/10 p-3 rounded-xl relative overflow-hidden transition-all animate-in fade-in slide-in-from-bottom-2 mx-1 mt-1 shadow-[0_0_20px_rgba(16,185,129,0.05)]">
            <div className={`absolute top-0 left-0 w-[2px] h-full ${chatLog.role === 'error' ? 'bg-red-500 shadow-[0_0_15px_rgba(220,38,38,1)]' : 'bg-gradient-to-b from-transparent via-emerald-500 to-transparent shadow-[0_0_15px_rgba(16,185,129,1)]'}`}></div>
            {/* ... baki terminal content apnar purono code-er motoy rakhben ... */}
-           {chatLog.role === 'ai' && !isPinDropMode && (
-             <div className="flex items-center gap-3 mb-2 pb-2 border-b border-white/5 relative z-10">
-                <div className="flex items-center gap-1.5 text-[9px] text-emerald-400 font-mono bg-emerald-500/10 px-2 py-1 rounded-md border border-emerald-500/20 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
-                  <Cpu className="w-3 h-3" /> PROCESSED BY: {chatLog.brain || 'SYSTEM'}
-                </div>
-                {chatLog.circuitTripped && (
-                  <div className="flex items-center gap-1.5 text-[9px] text-amber-400 font-mono bg-amber-500/10 px-2 py-1 rounded-md border border-amber-500/20 shadow-[0_0_10px_rgba(245,158,11,0.1)]">
-                    <AlertTriangle className="w-3 h-3" /> TRIPPED: {chatLog.circuitTripped}
-                  </div>
-                )}
+           {(isProcessing || chatLog.role === 'ai') && !isPinDropMode && (
+             <div className="grid grid-cols-2 gap-2 mb-3 pb-3 border-b border-white/5 relative z-10">
+                 {/* BOX 1: SYSTEM BRAIN */}
+                 <div className="flex flex-col gap-1 p-2 bg-black/40 border border-emerald-500/20 rounded-lg shadow-[inset_0_0_15px_rgba(16,185,129,0.05)]">
+                    <span className="text-[9px] text-emerald-500 font-bold tracking-widest flex items-center gap-1.5">
+                      <Cpu className="w-3.5 h-3.5"/> SYSTEM BRAIN
+                    </span>
+                    <span className="text-[10px] font-mono text-gray-300 mt-1">
+                      {isProcessing ? '⚡ EXECUTING SWARM...' : `Primary: ${chatLog.brain || 'GEMINI'}`}
+                    </span>
+                    {chatLog.circuitTripped && !isProcessing && (
+                      <span className="text-[9px] font-mono text-amber-400 mt-1 flex items-start gap-1 bg-amber-500/10 p-1 rounded border border-amber-500/20">
+                        <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
+                        {chatLog.circuitTripped}
+                      </span>
+                    )}
+                 </div>
+
+                 {/* BOX 2: LIVE AGENT TERMINAL */}
+                 <div className="flex flex-col gap-1 p-2 bg-black/40 border border-blue-500/20 rounded-lg shadow-[inset_0_0_15px_rgba(59,130,246,0.05)] overflow-hidden">
+                    <span className="text-[9px] text-blue-500 font-bold tracking-widest flex items-center gap-1.5">
+                      {isProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : <ShieldCheck className="w-3 h-3"/>}
+                      {isProcessing ? 'LIVE AGENT TRACKER' : 'SWARM STATUS'}
+                    </span>
+                    <span className={`text-[10px] font-mono mt-1 ${isProcessing ? 'text-blue-300' : 'text-emerald-400'}`}>
+                      {isProcessing ? liveAgentLog : '✅ ALL AGENTS DEPLOYED'}
+                    </span>
+                 </div>
              </div>
            )}
            <div className="font-mono text-[11px] md:text-xs text-gray-300 leading-relaxed pl-2 relative z-10">
@@ -311,6 +361,7 @@ export default function HelpBar() {
         </div>
       )}
 
+      
       {/* 🛑 2. MAIN INPUT MODULE (Back to the Tactical Red Design!) 🛑 */}
       {/* 🛑 2. MAIN INPUT MODULE (Exact Match from Screenshot - Tactical Red) 🛑 */}
       <div
@@ -344,7 +395,8 @@ export default function HelpBar() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={isPinDropMode ? "AWAITING TACTICAL PIN DROP..." : isListening ? "Listening to your voice..." : "Describe your emergency or use voice command..."}
-          className={`flex-1 bg-transparent border-none text-white focus:ring-0 text-xs font-mono outline-none transition-all pb-0.5 ${isListening ? 'placeholder-red-500/70' : isPinDropMode ? 'placeholder-purple-400/60' : 'placeholder-gray-500'}`}
+          // 👇 EIKHANE text-xs ke kete text-lg ba text-xl kora hoyeche 👇
+          className={`flex-1 bg-transparent border-none text-white focus:ring-0 text-lg font-mono outline-none transition-all pb-0.5 ${isListening ? 'placeholder-red-500/70' : isPinDropMode ? 'placeholder-purple-400/60' : 'placeholder-gray-500'}`}
           onKeyDown={(e) => e.key === 'Enter' && handleInitialSend()}
           disabled={isProcessing || isListening || isPinDropMode}
         />
@@ -394,6 +446,13 @@ export default function HelpBar() {
             </span>
           )}
         </div>
+
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
+            <span className="text-[10px] font-mono text-gray-400 tracking-widest">A PRODUCT OF</span>
+            <span className="text-[11px] font-bold tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]">
+              RANAJIT DHAR
+            </span>
+          </div>
 
         <div className="flex items-center gap-6 opacity-80">
            <span className="hidden md:flex items-center gap-1.5 text-blue-400/90">
