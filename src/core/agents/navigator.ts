@@ -52,11 +52,11 @@ export class NavigatorAgent extends BaseAgent {
         finalDestCoords = decision.primaryNeed === 'hospital' ? hospitalCoords : bunkerCoords; 
       } 
       else if (hospitalCoords && !bunkerCoords) {
-        responseText = `Verified Hospital detected, but NO BUNKERS found within 10km radius. ${decision.instruction}`;
+        responseText = `Verified Hospital detected, but NO BUNKERS found within 25km radius. ${decision.instruction}`;
         finalDestCoords = hospitalCoords;
       } 
       else if (!hospitalCoords && bunkerCoords) {
-        responseText = `Verified Bunker detected, but NO HOSPITALS found within 10km radius. ${decision.instruction}`;
+        responseText = `Verified Bunker detected, but NO HOSPITALS found within 25km radius. ${decision.instruction}`;
         finalDestCoords = bunkerCoords;
       } 
       else {

@@ -184,7 +184,7 @@ export default function MapCore() {
       {(userPin || isPinDropMode || destPin) && (
         <button 
           onClick={triggerResetFromMap}
-          className="absolute top-6 left-6 z-[1000] bg-black/80 backdrop-blur-md border border-gray-600 p-3 rounded-full text-white hover:bg-red-500/20 hover:border-red-500 hover:text-red-500 transition-all shadow-lg group"
+          className="absolute top-20 left-3 md:top-32 md:left-6 z-[1000] bg-black/80 backdrop-blur-md border border-gray-600 p-2 md:p-3 rounded-full text-white hover:bg-red-500/20 hover:border-red-500 hover:text-red-500 transition-all shadow-lg group"
           title="Clear Tactical Map"
         >
           <RotateCcw className="w-5 h-5 group-hover:-rotate-180 transition-transform duration-500" />
@@ -192,7 +192,7 @@ export default function MapCore() {
       )}
 
       {isPinDropMode && (
-        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-[1000] bg-purple-500/20 backdrop-blur-md border border-purple-500 p-3 rounded-full text-purple-400 font-mono text-xs animate-pulse shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+        <div className="absolute top-20 md:top-8 left-1/2 -translate-x-1/2 w-[90%] md:w-auto text-center z-[1000] bg-purple-500/20 backdrop-blur-md border border-purple-500 p-2 md:p-3 rounded-full text-purple-400 font-mono text-[9px] md:text-xs animate-pulse shadow-[0_0_20px_rgba(168,85,247,0.3)]">
           TARGET ACQUISITION MODE: CLICK MAP TO DROP PIN
         </div>
       )}

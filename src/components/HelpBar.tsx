@@ -245,11 +245,11 @@ export default function HelpBar() {
       {/* 1. LOCATION BAR (Top Section) */}
       <div className="w-full flex items-center justify-between px-3 py-2 border-b border-white/5 relative z-10">
         {!userCoords && !isPinDropMode ? (
-          <div className="flex w-full items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row w-full items-start md:items-center justify-between gap-2 md:gap-4">
             <span className="text-gray-400 font-mono text-xs flex items-center gap-2 group-hover:text-gray-300 transition-colors">
               <MapPin className="w-4 h-4 text-red-500 animate-bounce drop-shadow-[0_0_8px_rgba(220,38,38,0.8)]" /> LOCATION STANDBY
             </span>
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-full md:w-auto justify-between md:justify-end mt-1 md:mt-0">
               <button onClick={fetchLiveLocation} className="px-3 py-1.5 bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-500/20 hover:border-blue-400/50 rounded font-mono text-[10px] flex items-center gap-1 transition-all hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]">
                 <Navigation className="w-3 h-3" /> GPS
               </button>
@@ -259,20 +259,20 @@ export default function HelpBar() {
             </div>
           </div>
         ) : isPinDropMode ? (
-          <div className="flex w-full items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row w-full items-start md:items-center justify-between gap-2 md:gap-4">
             <span className="text-purple-400 font-mono text-xs animate-pulse flex items-center gap-2 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">
               <MapPin className="w-4 h-4" /> AWAITING TACTICAL PIN...
             </span>
-            <button onClick={triggerReset} className="px-3 py-1.5 bg-gray-800 border border-gray-700 text-gray-400 hover:text-white rounded font-mono text-[10px] flex items-center gap-1 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+            <button onClick={triggerReset} className="px-3 py-1.5 bg-gray-800 border border-gray-700 text-gray-400 hover:text-white rounded font-mono text-[10px] flex items-center gap-1 hover:shadow-[0_0_15px_rgba(255,255,255,0.1)] w-full md:w-auto justify-center mt-1 md:mt-0">
               <X className="w-3 h-3" /> CANCEL
             </button>
           </div>
         ) : (
-          <div className="flex w-full items-center justify-between gap-4">
+          <div className="flex flex-col md:flex-row w-full items-start md:items-center justify-between gap-2 md:gap-4">
             <span className="text-emerald-400 font-mono text-xs flex items-center gap-2 drop-shadow-[0_0_8px_rgba(16,185,129,0.6)]">
               <MapPin className="w-4 h-4" /> LOCKED: {userCoords?.lat.toFixed(3)}, {userCoords?.lng.toFixed(3)}
             </span>
-            <button onClick={triggerReset} className="px-3 py-1.5 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-400/50 rounded font-mono text-[10px] flex items-center gap-1 transition-all hover:shadow-[0_0_15px_rgba(220,38,38,0.3)]">
+            <button onClick={triggerReset} className="px-3 py-1.5 bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-400/50 rounded font-mono text-[10px] flex items-center gap-1 transition-all hover:shadow-[0_0_15px_rgba(220,38,38,0.3)] w-full md:w-auto justify-center mt-1 md:mt-0">
               <RotateCcw className="w-3 h-3" /> RESET
             </button>
           </div>
@@ -320,7 +320,7 @@ export default function HelpBar() {
            <div className={`absolute top-0 left-0 w-[2px] h-full ${chatLog.role === 'error' ? 'bg-red-500 shadow-[0_0_15px_rgba(220,38,38,1)]' : 'bg-gradient-to-b from-transparent via-emerald-500 to-transparent shadow-[0_0_15px_rgba(16,185,129,1)]'}`}></div>
            {/* ... baki terminal content apnar purono code-er motoy rakhben ... */}
            {(isProcessing || chatLog.role === 'ai') && !isPinDropMode && (
-             <div className="grid grid-cols-2 gap-2 mb-3 pb-3 border-b border-white/5 relative z-10">
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-3 pb-3 border-b border-white/5 relative z-10">
                  {/* BOX 1: SYSTEM BRAIN */}
                  <div className="flex flex-col gap-1 p-2 bg-black/40 border border-emerald-500/20 rounded-lg shadow-[inset_0_0_15px_rgba(16,185,129,0.05)]">
                     <span className="text-[9px] text-emerald-500 font-bold tracking-widest flex items-center gap-1.5">
@@ -396,7 +396,7 @@ export default function HelpBar() {
           onChange={(e) => setInput(e.target.value)}
           placeholder={isPinDropMode ? "AWAITING TACTICAL PIN DROP..." : isListening ? "Listening to your voice..." : "Describe your emergency or use voice command..."}
           // 👇 EIKHANE text-xs ke kete text-lg ba text-xl kora hoyeche 👇
-          className={`flex-1 bg-transparent border-none text-white focus:ring-0 text-lg font-mono outline-none transition-all pb-0.5 ${isListening ? 'placeholder-red-500/70' : isPinDropMode ? 'placeholder-purple-400/60' : 'placeholder-gray-500'}`}
+          className={`flex-1 bg-transparent border-none text-white focus:ring-0 text-sm md:text-lg font-mono outline-none transition-all pb-0.5 ${isListening ? 'placeholder-red-500/70' : isPinDropMode ? 'placeholder-purple-400/60' : 'placeholder-gray-500'}`}
           onKeyDown={(e) => e.key === 'Enter' && handleInitialSend()}
           disabled={isProcessing || isListening || isPinDropMode}
         />
@@ -414,7 +414,7 @@ export default function HelpBar() {
           <button 
             onClick={handleInitialSend}
             disabled={isProcessing || !input || isPinDropMode}
-            className={`px-6 py-3.5 text-white rounded-xl font-bold tracking-[0.1em] text-[11px] transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${isPinDropMode ? 'bg-purple-600 hover:bg-purple-500' : 'bg-[#b91c1c] hover:bg-[#dc2626] shadow-[0_0_15px_rgba(220,38,38,0.2)]'}`}
+            className={`px-3 py-2.5 md:px-6 md:py-3.5 text-white rounded-xl font-bold tracking-[0.05em] md:tracking-[0.1em] text-[9px] md:text-[11px] transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${isPinDropMode ? 'bg-purple-600 hover:bg-purple-500' : 'bg-[#b91c1c] hover:bg-[#dc2626] shadow-[0_0_15px_rgba(220,38,38,0.2)]'}`}
           >
             {isProcessing ? 'SYNCING...' : isPinDropMode ? 'AWAITING' : 'INITIATE RESCUE'}
             {!isProcessing && !isPinDropMode && <Send className="w-3.5 h-3.5 ml-1" />}
@@ -425,7 +425,7 @@ export default function HelpBar() {
       </div> {/* 🛑 EIKHANE APNAR MAIN GLASS CONTAINER TA BONDHO HOLO 🛑 */}
 
       {/* 3. DYNAMIC SYSTEM TELEMETRY (Full Screen Bottom Taskbar) */}
-      <div className="fixed bottom-0 left-0 w-full bg-[#020202] border-t border-white/10 flex justify-between items-center text-[10px] font-mono text-gray-500 px-8 py-2.5 z-[9999] shadow-none">
+      <div className="fixed bottom-0 left-0 w-full bg-[#020202] border-t border-white/10 flex justify-between items-center text-[10px] font-mono text-gray-500 px-2 md:px-8 py-1.5 md:py-2.5 z-[9999] shadow-none">
         
         <div className="flex items-center gap-4">
           {isProcessing ? (
@@ -463,7 +463,8 @@ export default function HelpBar() {
              STABILITY: <span className="text-emerald-500">{stability}%</span>
            </span>
            <span className="opacity-30 hidden md:inline">|</span>
-           <span className="flex items-center gap-1.5 text-purple-400/90">
+           {/* 👇 hidden on mobile, visible on small/desktop screens */}
+           <span className="hidden sm:flex items-center gap-1.5 text-purple-400/90">
              <ShieldCheck className="w-3.5 h-3.5 text-purple-500" /> SECURE: {securityKey}
            </span>
         </div>
