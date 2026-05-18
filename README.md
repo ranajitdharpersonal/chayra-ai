@@ -2,7 +2,7 @@
   <img src="public/logo.png" alt="ChayRa AI Logo" width="120" style="filter: drop-shadow(0 0 20px rgba(220,38,38,0.8));" />
   <h1>ChayRa AI</h1>
   <br><p>
-    <a href="https://chayra-ai.vercel.app" target="_blank">
+    <a href="https://chayra.ranajitdhar.in" target="_blank">
       <img src="https://img.shields.io/badge/Vercel-Live_Tactical_Demo-000000?style=for-the-badge&logo=vercel&logoColor=red" alt="Vercel Live Demo" />
     </a>
     <img src="https://img.shields.io/badge/Status-Mission_Critical-ef4444?style=for-the-badge" alt="Mission Critical" />
@@ -153,7 +153,7 @@ ChayRa AI relies on a highly modular, serverless edge-optimized infrastructure. 
 
 <div align="center">
   <br>
-  <a href="https://chayra-ai.vercel.app" target="_blank">
+  <a href="https://chayra.ranajitdhar.in" target="_blank">
     <img src="https://img.shields.io/badge/🚀_Skip_Installation_&_Try_Live_Demo-Click_Here-000000?style=for-the-badge&logo=vercel" height="35" alt="Live Demo"/>
   </a>
   <br><br>
@@ -162,7 +162,7 @@ ChayRa AI relies on a highly modular, serverless edge-optimized infrastructure. 
 
 ### 1. Clone & Install
 ```bash
-git clone [https://github.com/ranajitdharpersonal/chayra-ai.git](https://github.com/ranajitdharpersonal/chayra-ai.git)
+git clone https://github.com/ranajitdharpersonal/chayra-ai
 cd chayra-ai
 npm install
 ```
