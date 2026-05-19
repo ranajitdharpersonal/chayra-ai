@@ -44,8 +44,7 @@ export default function Home() {
         </div>
 
         {/* --- BOTTOM: Command Center --- */}
-        {/* Mobile: Screen jure bosbe. Desktop: Dan dike ActionPanel er jonno jayga charbe */}
-        <div className="absolute bottom-10 md:bottom-14 left-1 right-1 md:left-18 md:right-[400px] lg:right-[450px] pointer-events-none z-50">
+        <div className="absolute bottom-20 md:bottom-14 left-2 right-2 md:left-18 md:right-[400px] lg:right-[450px] pointer-events-none z-50">
           <div className="w-full pointer-events-auto">
             <HelpBar />
           </div>
