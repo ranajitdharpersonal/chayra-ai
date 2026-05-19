@@ -414,10 +414,10 @@ export default function HelpBar() {
           <button 
             onClick={handleInitialSend}
             disabled={isProcessing || !input || isPinDropMode}
-            className={`px-3 py-2.5 md:px-6 md:py-3.5 text-white rounded-xl font-bold tracking-[0.05em] md:tracking-[0.1em] text-[9px] md:text-[11px] transition-all flex items-center gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed ${isPinDropMode ? 'bg-purple-600 hover:bg-purple-500' : 'bg-[#b91c1c] hover:bg-[#dc2626] shadow-[0_0_15px_rgba(220,38,38,0.2)]'}`}
+            className={`px-3 py-2.5 md:px-6 md:py-3.5 text-white rounded-xl font-bold tracking-[0.05em] md:tracking-[0.1em] text-[10px] md:text-[11px] transition-all flex items-center gap-1 md:gap-2 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 ${isPinDropMode ? 'bg-purple-600 hover:bg-purple-500' : 'bg-[#b91c1c] hover:bg-[#dc2626] shadow-[0_0_15px_rgba(220,38,38,0.2)]'}`}
           >
-            {isProcessing ? 'SYNCING...' : isPinDropMode ? 'AWAITING' : 'INITIATE RESCUE'}
-            {!isProcessing && !isPinDropMode && <Send className="w-3.5 h-3.5 ml-1" />}
+            {isProcessing ? 'SYNCING...' : isPinDropMode ? 'AWAITING' : <><span className="hidden sm:inline">INITIATE </span>RESCUE</>}
+            {!isProcessing && !isPinDropMode && <Send className="w-3 h-3 md:w-3.5 md:h-3.5 ml-0 md:ml-1" />}
           </button>
         </div>
       </div>
@@ -425,46 +425,48 @@ export default function HelpBar() {
       </div> {/* 🛑 EIKHANE APNAR MAIN GLASS CONTAINER TA BONDHO HOLO 🛑 */}
 
       {/* 3. DYNAMIC SYSTEM TELEMETRY (Full Screen Bottom Taskbar) */}
-      <div className="fixed bottom-0 left-0 w-full bg-[#020202] border-t border-white/10 flex justify-between items-center text-[10px] font-mono text-gray-500 px-2 md:px-8 py-1.5 md:py-2.5 z-[9999] shadow-none">
+      <div className="fixed bottom-0 left-0 w-full bg-[#020202] border-t border-white/10 flex justify-between items-center text-[10px] font-mono text-gray-500 px-3 md:px-8 py-2 z-[9999] shadow-none">
         
-        <div className="flex items-center gap-4">
+        {/* Left Side: Live Status */}
+        <div className="flex items-center gap-2 md:gap-4">
           {isProcessing ? (
-            <span className="flex items-center gap-2 text-amber-400">
+            <span className="flex items-center gap-1.5 md:gap-2 text-amber-400 text-[8px] md:text-[10px]">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping"></span> ORCHESTRATING...
             </span>
           ) : isListening ? (
-            <span className="flex items-center gap-2 text-red-500 animate-pulse">
+            <span className="flex items-center gap-1.5 md:gap-2 text-red-500 animate-pulse text-[8px] md:text-[10px]">
               <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span> INTERCEPTING...
             </span>
           ) : isPinDropMode ? (
-            <span className="flex items-center gap-2 text-purple-400">
+            <span className="flex items-center gap-1.5 md:gap-2 text-purple-400 text-[8px] md:text-[10px]">
               <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse"></span> AWAITING COORDS
             </span>
           ) : (
-            <span className="flex items-center gap-2 text-emerald-500/80">
+            <span className="flex items-center gap-1.5 md:gap-2 text-emerald-500/80 text-[8px] md:text-[10px]">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span> SYSTEM ONLINE
             </span>
           )}
         </div>
 
-        <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
-            <span className="text-[10px] font-mono text-gray-400 tracking-widest">A PRODUCT OF</span>
-            <span className="text-[11px] font-bold tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]">
+        {/* Right Side (Mobile) / Center (Desktop): Author Name */}
+        <div className="flex items-center gap-1 md:absolute md:left-1/2 md:-translate-x-1/2 justify-end">
+            <span className="hidden md:inline text-[10px] font-mono text-gray-400 tracking-widest">A PRODUCT OF</span>
+            <span className="text-[9px] md:text-[11px] font-bold tracking-[0.1em] md:tracking-[0.2em] text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 drop-shadow-[0_0_8px_rgba(16,185,129,0.4)]">
               RANAJIT DHAR
             </span>
-          </div>
+        </div>
 
-        <div className="flex items-center gap-6 opacity-80">
-           <span className="hidden md:flex items-center gap-1.5 text-blue-400/90">
+        {/* Right Side: Desktop Only Metrics */}
+        <div className="hidden md:flex items-center gap-6 opacity-80">
+           <span className="flex items-center gap-1.5 text-blue-400/90">
              <Clock3 className="w-3.5 h-3.5" /> LATENCY: <span className={latency ? 'text-blue-300' : 'text-gray-600'}>{latency ? `${latency}ms` : '--'}</span>
            </span>
-           <span className="opacity-30 hidden md:inline">|</span>
-           <span className="hidden md:flex items-center gap-1.5">
+           <span className="opacity-30">|</span>
+           <span className="flex items-center gap-1.5">
              STABILITY: <span className="text-emerald-500">{stability}%</span>
            </span>
-           <span className="opacity-30 hidden md:inline">|</span>
-           {/* 👇 hidden on mobile, visible on small/desktop screens */}
-           <span className="hidden sm:flex items-center gap-1.5 text-purple-400/90">
+           <span className="opacity-30">|</span>
+           <span className="flex items-center gap-1.5 text-purple-400/90">
              <ShieldCheck className="w-3.5 h-3.5 text-purple-500" /> SECURE: {securityKey}
            </span>
         </div>

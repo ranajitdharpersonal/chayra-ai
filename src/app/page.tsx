@@ -39,13 +39,13 @@ export default function Home() {
 
         {/* --- RIGHT SIDE / MOBILE MIDDLE: Action Widgets --- */}
         {/* Mobile: Logo er niche scroll korbe. Desktop: Dan dike bosbe */}
-        <div className="absolute top-20 left-2 right-2 bottom-[180px] md:top-6 md:left-auto md:right-6 md:bottom-6 overflow-y-auto scrollbar-hide pointer-events-auto z-40 flex md:block justify-center">
+        <div className="absolute top-20 left-2 right-2 bottom-[240px] md:top-6 md:left-auto md:right-6 md:bottom-6 overflow-y-auto scrollbar-hide pointer-events-auto z-40 flex md:block justify-center">
           <ActionPanel />
         </div>
 
         {/* --- BOTTOM: Command Center --- */}
         {/* Mobile: Screen jure bosbe. Desktop: Dan dike ActionPanel er jonno jayga charbe */}
-        <div className="absolute bottom-[4.5rem] left-2 right-2 md:bottom-14 md:left-18 md:right-[400px] lg:right-[450px] pointer-events-none z-50">
+        <div className="absolute bottom-10 md:bottom-14 left-1 right-1 md:left-18 md:right-[400px] lg:right-[450px] pointer-events-none z-50">
           <div className="w-full pointer-events-auto">
             <HelpBar />
           </div>
