@@ -44,7 +44,8 @@ export default function Home() {
         </div>
 
         {/* --- BOTTOM: Command Center --- */}
-        <div className="absolute bottom-20 md:bottom-14 left-2 right-2 md:left-18 md:right-[400px] lg:right-[450px] pointer-events-none z-50">
+        {/* left-3 right-3 kora holo button take bhitore anar jonno, ar md:bottom-20 kora holo jate Mobile-er Desktop Site-eo na lukiye jay */}
+        <div className="absolute bottom-[85px] md:bottom-20 left-3 right-3 md:left-18 md:right-[400px] lg:right-[450px] pointer-events-none z-50">
           <div className="w-full pointer-events-auto">
             <HelpBar />
           </div>
