@@ -47,7 +47,7 @@ export class NavigatorAgent extends BaseAgent {
 
       // 🛑 3. SMART DECISION TREE (Based on what is actually found)
       if (hospitalCoords && bunkerCoords) {
-        responseText = `Verified Hospital AND Bunker BOTH detected within 10km! ${decision.instruction}`;
+        responseText = `Verified Hospital AND Bunker BOTH detected within 25km! ${decision.instruction}`;
         // Map e pin porbe AI er priority onujayi
         finalDestCoords = decision.primaryNeed === 'hospital' ? hospitalCoords : bunkerCoords; 
       } 
