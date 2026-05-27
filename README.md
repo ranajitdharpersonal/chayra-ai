@@ -2,10 +2,13 @@
   <img src="public/logo.png" alt="ChayRa AI Logo" width="120" style="filter: drop-shadow(0 0 20px rgba(220,38,38,0.8));" />
   <h1>ChayRa AI</h1>
   <br><p>
-    <a href="https://chayra.ranajitdhar.in" target="_blank">
-      <img src="https://img.shields.io/badge/Vercel-Live_Tactical_Demo-000000?style=for-the-badge&logo=vercel&logoColor=red" alt="Vercel Live Demo" />
+    <a href="https://youtu.be/o96lhMEYhxM" target="_blank">
+      <img src="https://img.shields.io/badge/Watch_Demo_Video-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Watch Demo Video" />
     </a>
-    <img src="https://img.shields.io/badge/Status-Mission_Critical-ef4444?style=for-the-badge" alt="Mission Critical" />
+    <a href="https://chayra.ranajitdhar.in" target="_blank">
+      <img src="https://img.shields.io/badge/Vercel-Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=red" alt="Vercel Live Demo" />
+    </a>
+    <img src="https://img.shields.io/badge/Status-Mission_Critical-FF0000?style=for-the-badge" alt="Mission Critical" />
     <img src="https://img.shields.io/badge/Swarm_Engine-3_Brains_|_7_Agents-8b5cf6?style=for-the-badge" alt="3 Brains & 7 Agents Swarm" />
     <img src="https://img.shields.io/badge/©_2026-Ranajit_Dhar-0ea5e9?style=for-the-badge" alt="Copyright Ranajit Dhar 2026" />
   </p>
@@ -26,6 +29,7 @@ We are building the ultimate digital safety net for zero-hour emergencies, turni
 * 🛡️ **Offline-First Mesh Network (Vault Agent):** Generates secure alphanumeric rescue beacons and autonomously instructs victims to utilize Bluetooth/WiFi Direct for peer-to-peer distress pings when traditional cell towers collapse.
 * **🔌 3-Tier Auto-Failover Circuit Breaker:** Robust backend logic ensures that if the primary LLM brain fails or hallucinates, the system seamlessly falls back to a secondary module or a "Trust-User" default state(**Gemini 3 Pro` ➔ `Groq Llama 3` ➔ `HF Qwen**). False negatives are fatal in emergencies, so ChayRa guarantees uninterrupted execution.
 * **📍 Tactical Pin Drop & Live GPS:** Victims can transmit their live location via secure GPS handshakes or utilize the "Drop Pin" feature on a tactical map when GPS is spoofed or compromised.
+* 💾 **Partner Integration (MongoDB MCP):** The Vault Agent autonomously connects to the MongoDB Model Context Protocol (MCP) to securely log and encrypt emergency victim data (Threat Level, Location, Circuit Status) as a secure backend crisis-registry.
 * 🔍 **Live Rumor Verification:** A dedicated intel search bar allows victims to instantly fact-check local news and dispel panic-inducing misinformation during the chaos of a crisis.
 * **💻 Glassmorphism Tactical Console:** A premium, dark-themed, military-grade UI with dynamic glow states, real-time latency tracking, and autonomous agent processing indicators.
 
@@ -68,53 +72,95 @@ Unlike traditional monolithic LLMs, ChayRa AI operates on a **Swarm Architecture
 4. **⚖️ Verifier:** The Fact-Checker. Cross-references the victim's claim with Radar Intel to prevent hallucinations and establish an intelligence confidence score.
 5. **🏥 Medical:** Generates immediate, life-saving triage protocols based on the extracted injury/disaster context.
 6. **🗺️ Navigator:** Processes exact GPS coordinates or manual pin drops to map out tactical evacuation and routing protocols.
-7. **🔒 Vault:** Manages secure identity and generates emergency beacons.
+7. **🔒 Vault:** Manages secure identity and generates emergency beacons. **(Powered by MongoDB MCP for secure, offline-ready data logging).**
 
 ---
 
-## 🧠 Autonomous Swarm Architecture Flow
+## 🧬 High-Level Architecture (The Swarm & The Shield)
 
-The core of ChayRa AI relies on a highly specialized Evaluator-Optimizer loop. Here is the visual breakdown of our Multi-Agent Swarm execution:
+ChayRa AI is powered by a modular, self-healing architecture that guarantees 100% uptime and zero hallucinations.
+
+<div align="center">
+  <img src="public/architecture.png" alt="ChayRa AI Agentic Swarm Architecture" width="100%" />
+  <br>
+  <em>The Multi-Brain Swarm Intelligence & Auto-Failover Circuit Breaker</em>
+</div>
+
+<br>
+
+<details>
+<summary><h3> <u>Click Here to Expand the Technical Mermaid Blueprint</u></h3></summary>
 
 ```mermaid
 graph TD
-    %% Core Input
-    User((👤 Victim Input <br> Voice/Text)) -->|Polyglot Decode| MG[🛡️ MindGuard Firewall]
+    %% Global APIs & Autonomous Radar (Top Right)
+    LiveFeeds((🌐 Live Global APIs)) -->|Continuous Scan| Radar[📡 Radar Agent <br> Scans Environment]
+    Radar -->|Live Threat Map| UI(((💻 Tactical Console / UI)))
+
+    %% The Brain Router (Standalone Top Left)
+    subgraph "🧠 BRAIN ROUTER (Multi Brain Auto Failover)"
+        direction LR
+        G{"Gemini 3 Pro"} -->|ANY ERROR| L{"Groq (Llama 3)"}
+        L -->|ANY ERROR| Q{"HF (Qwen)"}
+    end
+
+    %% Core Input Flow (Top Center)
+    User((🎙️ Victim Input <br> Voice/Text)) -->|Polyglot Decode| MG[🛡️ MindGuard Agent Firewall]
+    
+    %% Brain Connections (Dotted lines to show cognitive powering)
+    G -.->|Powers| MG
+    G -.->|Powers| Swarm
+    G -.->|Powers| Scav
 
     %% Firewall Logic
     MG -->|Spam / Prank| Deny[❌ Request Denied]
     MG -->|Omni-Disaster Bypass ⚡| Swarm{⚙️ Swarm Orchestrator}
     MG -->|Validated Crisis| Swarm
 
-    %% Extraction
+    %% Extraction & Orchestration
     Swarm --> Scav[🕵️‍♂️ Scavenger Agent <br> Extracts Threat Level]
-    
-    %% Parallel Processing
-    Scav -->|Context| Radar[📡 Radar Agent <br> Scans Environment]
-    Scav -->|Context| Verifier[⚖️ Verifier Agent <br> Fact-Checks Intel]
-    
-    Radar <-->|Cross-Reference| Verifier
-    
-    Scav -->|Coords| Nav[🗺️ Navigator Agent <br> Tactical Routing]
+
+    %% Radar Intel Distribution
+    Radar -->|Live Intel Feed| Verifier[⚖️ Verifier Agent <br> Fact-Checks Intel]
+    Radar -->|Danger Zones| Nav[🗺️ Navigator Agent <br> Tactical Routing]
+
+    %% Scavenger Data Distribution
     Scav -->|Injury Data| Med[🏥 Medical Agent <br> Triage Protocols]
     Scav -->|Secure ID| Vault[🔒 Vault Agent <br> Key Generation]
+    Scav -->|Context| Verifier
+    Scav -->|Coords| Nav
 
-    %% Final Output
-    Verifier --> UI
-    Nav --> UI
+    %% Final Output to UI (Bottom)
     Med --> UI
     Vault --> UI
-    
-    UI(((💻 Tactical Glassmorphism Console)))
-    
-    classDef firewall fill:#2d0909,stroke:#ef4444,stroke-width:2px,color:#fff;
-    classDef core fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#fff;
-    classDef agent fill:#022c22,stroke:#10b981,stroke-width:2px,color:#fff;
+    Verifier --> UI
+    Nav --> UI
+
+    %% --- 🛑 NEW MONGODB INTEGRATION (Partner MCP) ---
+    MongoDB[(💾 MongoDB MCP <br> Secure Crisis Log)]
+    Vault -.->|Background Sync| MongoDB
+
+    %% Styling to match your colors
+    classDef firewall fill:#dc2626,stroke:#ef4444,stroke-width:2px,color:#fff;
+    classDef core fill:#0ea5e9,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef agent fill:#fef08a,stroke:#eab308,stroke-width:2px,color:#000;
+    classDef brain fill:#fee2e2,stroke:#f87171,stroke-width:2px,color:#000;
+    classDef radar fill:#e0e7ff,stroke:#818cf8,stroke-width:2px,color:#000;
     
     class MG firewall;
     class Swarm,Scav core;
-    class Radar,Verifier,Nav,Med,Vault agent;
+    class Verifier,Nav,Med,Vault agent;
+    class Radar radar;
+    class G,L,Q brain;
+    classDef db fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#fff;
+    class MongoDB db;
 ```
+</details>
+
+---
+
+
+
 
 ## ⚙️ The Tech Stack & Directory Structure
 
@@ -124,6 +170,7 @@ ChayRa AI relies on a highly modular, serverless edge-optimized infrastructure. 
 * **The Intelligence Swarm (3-Tier):** ![Gemini Pro](https://img.shields.io/badge/Gemini_3_Pro-8E75B2?style=for-the-badge&logo=googlebard&logoColor=white) ![Llama 3](https://img.shields.io/badge/Groq_Llama_3-F56565?style=for-the-badge) ![Qwen](https://img.shields.io/badge/HF_Qwen_2.5-FF9D00?style=for-the-badge)
 * **Live Intel & Radar APIs:** ![Overpass API](https://img.shields.io/badge/Overpass_API_(OSM)-748B75?style=for-the-badge&logo=openstreetmap&logoColor=white) ![SerpAPI](https://img.shields.io/badge/SerpAPI_Live_Search-FFD700?style=for-the-badge&logo=google&logoColor=black)
 * **Polyglot & Telemetry:** ![Voice API](https://img.shields.io/badge/Web_Audio_&_Voice-FF4444?style=for-the-badge&logo=webrtc&logoColor=white) ![Kyber-1024](https://img.shields.io/badge/Kyber_1024_Secured-4A00E0?style=for-the-badge&logo=springsecurity&logoColor=white)
+* **Partner Backend:** ![MongoDB](https://img.shields.io/badge/MongoDB_MCP-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 * **Infrastructure:** ![Vercel](https://img.shields.io/badge/Vercel_Edge-000000?style=for-the-badge&logo=vercel&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 
 ### 📂 Core Directory Architecture

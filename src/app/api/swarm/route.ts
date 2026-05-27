@@ -8,6 +8,7 @@ import { vaultAgent } from '@/core/agents/vault';
 import { mindguardAgent } from '@/core/agents/mindguard'; 
 import { verifierAgent } from '@/core/agents/verifier'; // 🛑 NEW IMPORT: VERIFIER
 import { askBrain } from '@/core/brain/brain'; // 🛑 NEW IMPORT: For Live Circuit Status
+import { MongoClient } from 'mongodb'; // 🛑 NEW: MONGODB IMPORT
 
 export async function POST(request: Request) {
   try {
@@ -74,8 +75,38 @@ export async function POST(request: Request) {
     // 🛑 STEP 3: SYSTEM CONVERSATIONAL MESSAGE
     const systemMessage = `THREAT LEVEL: ${triageData.threatLevel}. Rescue protocols activated. Follow tactical intel on the panels.`;
 
+
+
     // 🛑 NEW: FAST PING TO GET ACTIVE BRAIN & CIRCUIT STATUS
     const sysPing = await askBrain("ping", "ping");
+
+    // 🛑 SURGERY: BACKGROUND SHADOW LOGGING TO MONGODB (Fire and Forget)
+    const logToMongoDB = async () => {
+        if (!process.env.MONGODB_URI) return;
+        try {
+            const client = new MongoClient(process.env.MONGODB_URI);
+            await client.connect();
+            // Database ar Collection er nam
+            const db = client.db('ChayRa_Crisis_Engine');
+            const collection = db.collection('Vault_Victim_Logs');
+            
+            // Data Save hocche
+            await collection.insertOne({
+                timestamp: new Date(),
+                threatLevel: triageData?.threatLevel || "Unknown",
+                location: userLocation || "Unknown",
+                vaultIntel: vaultInfo || "No intel",
+                circuitActive: sysPing.modelUsed
+            });
+            
+            await client.close();
+            console.log("🟢 VAULT AGENT: Secure intel backed up to MongoDB successfully.");
+        } catch (error) {
+            console.error("🔴 VAULT AGENT WARNING: MongoDB Logging Failed, but Swarm is still active.", error);
+        }
+    };
+    
+    logToMongoDB(); // Trigger kora holo (Kintu await korlam na jate delay na hoy)
 
     // 🛑 STEP 4: SENDING DATA TO FRONTEND (Perfect JSON for HelpBar)
     return NextResponse.json({ 

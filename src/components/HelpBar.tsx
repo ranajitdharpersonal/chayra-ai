@@ -33,7 +33,8 @@ export default function HelpBar() {
       "⚖️ [Verifier]: Cross-referencing intel...",
       "⚕️ [Medical]: Analyzing trauma context...",
       "🗺️ [Navigator]: Executing DUAL-SCAN routing...",
-      "🛡️ [Vault]: Securing identity beacon..."
+      "🛡️ [Vault]: Securing identity beacon...",
+      "✅ [System]: SECURING LOGS TO MONGODB MCP..."
     ];
     
     let step = 0;
