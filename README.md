@@ -222,6 +222,7 @@ GEMINI_API_KEY=your_primary_brain_key
 GROQ_API_KEY=your_llama3_failover_key
 HF_TOKEN=your_survival_key
 SERPAPI_API_KEY=live_rumor_verification_key
+MONGODB_URI=your_database_key
 # Note: Overpass API (OpenStreetMap) is used for routing and does not require an API key!
 ```
 
