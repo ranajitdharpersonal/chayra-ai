@@ -26,11 +26,11 @@ We are building the ultimate digital safety net for zero-hour emergencies, turni
 * **🎙️ Polyglot Voice-to-Action Protocol:** Built-in military-grade voice command processing. Victims can speak naturally in extreme stress (**100+ Local Languages**), and the system autonomously decodes, translates, and triggers the rescue swarm.
 * 🗺️ **25km Tactical Routing (Navigator):** Automatically scans a 25km radius via OpenStreetMap to pinpoint verified hospitals, civilian shelters, or military bunkers, generating a secure evacuation route from the user's live location.
 * ⚕️ **Live AI Triage (Medical Agent):** Instantly analyzes trauma context to generate life-saving first-aid steps and medication suggestions. Features a robust offline fallback lifeline protocol if connectivity drops.
-* 🛡️ **Offline-First Mesh Network (Vault Agent):** Generates secure alphanumeric rescue beacons and autonomously instructs victims to utilize Bluetooth/WiFi Direct for peer-to-peer distress pings when traditional cell towers collapse.
 * **🔌 3-Tier Auto-Failover Circuit Breaker:** Robust backend logic ensures that if the primary LLM brain fails or hallucinates, the system seamlessly falls back to a secondary module or a "Trust-User" default state(**Gemini 3 Pro` ➔ `Groq Llama 3` ➔ `HF Qwen**). False negatives are fatal in emergencies, so ChayRa guarantees uninterrupted execution.
 * **📍 Tactical Pin Drop & Live GPS:** Victims can transmit their live location via secure GPS handshakes or utilize the "Drop Pin" feature on a tactical map when GPS is spoofed or compromised.
 * 💾 **Partner Integration (MongoDB MCP):** The Vault Agent autonomously connects to the MongoDB Model Context Protocol (MCP) to securely log and encrypt emergency victim data (Threat Level, Location, Circuit Status) as a secure backend crisis-registry.
 * 🔍 **Live Rumor Verification:** A dedicated intel search bar allows victims to instantly fact-check local news and dispel panic-inducing misinformation during the chaos of a crisis.
+* 🛡️ **Offline-First Mesh Network (Vault Agent):** Generates secure alphanumeric emergency beacons. While this prototype currently simulates the rescue beacon workflow, the architecture is explicitly designed for future offline peer-to-peer communication through Bluetooth mesh and WiFi Direct when traditional cell towers collapse.
 * **💻 Glassmorphism Tactical Console:** A premium, dark-themed, military-grade UI with dynamic glow states, real-time latency tracking, and autonomous agent processing indicators.
 
 ---
