@@ -426,7 +426,7 @@ export default function HelpBar() {
       </div> {/* 🛑 EIKHANE APNAR MAIN GLASS CONTAINER TA BONDHO HOLO 🛑 */}
 
       {/* 3. DYNAMIC SYSTEM TELEMETRY (Full Screen Bottom Taskbar) */}
-      <div className="fixed bottom-0 left-0 w-full bg-[#020202] border-t border-white/10 flex justify-between items-center text-[10px] font-mono text-gray-500 px-3 md:px-8 py-2 z-[9999] shadow-none">
+      <div className="fixed bottom-0 left-0 w-full hidden md:flex bg-[#020202] border-t border-white/10 flex justify-between items-center text-[10px] font-mono text-gray-500 px-3 md:px-8 py-2 z-[9999] shadow-none">
         
         {/* Left Side: Live Status */}
         <div className="flex items-center gap-2 md:gap-4">
