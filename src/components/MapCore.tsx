@@ -204,7 +204,7 @@ export default function MapCore() {
         maxBounds={bounds}
         maxBoundsViscosity={1.0}
         worldCopyJump={true} 
-        style={{ height: '100vh', width: '100vw', background: '#000' }} 
+        style={{ height: '100%', width: '100%', background: '#000' }} 
         zoomControl={false}
         attributionControl={false}
       >
