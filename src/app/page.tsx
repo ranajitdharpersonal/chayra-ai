@@ -44,12 +44,12 @@ export default function Home() {
         {/* top-[76px] = logo height | bottom-[160px] = HelpBar space   */}
         {/* Map is visible through the semi-transparent widget cards     */}
         {/* ============================================================ */}
-        <div className="md:hidden absolute top-[45%] left-2 right-2 bottom-[145px] overflow-y-auto scrollbar-hide pointer-events-auto z-40 px-2">
+        <div className="md:hidden absolute top-[45%] left-2 right-2 bottom-[155px] overflow-y-auto scrollbar-hide pointer-events-auto z-40 px-2">
           <ActionPanel />
         </div>
 
         {/* HelpBar — Mobile + Desktop combined */}
-        <div className="absolute bottom-[56px] left-0 right-0 md:bottom-20 md:left-18 md:right-[400px] lg:right-[450px] pointer-events-auto z-50 px-0 md:px-0">
+        <div className="absolute bottom-[66px] left-0 right-0 md:bottom-20 md:left-18 md:right-[400px] lg:right-[450px] pointer-events-auto z-50 px-0 md:px-0">
           <HelpBar />
         </div>
 
