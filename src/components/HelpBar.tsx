@@ -246,11 +246,11 @@ export default function HelpBar() {
       {/* 1. LOCATION BAR (Top Section) */}
       <div className="w-full flex items-center justify-between px-3 py-2 border-b border-white/5 relative z-10">
         {!userCoords && !isPinDropMode ? (
-          <div className="flex flex-col md:flex-row w-full items-start md:items-center justify-between gap-2 md:gap-4">
+          <div className="flex flex-row w-full items-center justify-between gap-2">
             <span className="text-gray-400 font-mono text-xs flex items-center gap-2 group-hover:text-gray-300 transition-colors">
               <MapPin className="w-4 h-4 text-red-500 animate-bounce drop-shadow-[0_0_8px_rgba(220,38,38,0.8)]" /> LOCATION STANDBY
             </span>
-            <div className="flex gap-2 w-full md:w-auto justify-between md:justify-end mt-1 md:mt-0">
+            <div className="flex gap-2 w-auto justify-end">
               <button onClick={fetchLiveLocation} className="px-3 py-1.5 bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-500/20 hover:border-blue-400/50 rounded font-mono text-[10px] flex items-center gap-1 transition-all hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]">
                 <Navigation className="w-3 h-3" /> GPS
               </button>
@@ -260,7 +260,7 @@ export default function HelpBar() {
             </div>
           </div>
         ) : isPinDropMode ? (
-          <div className="flex flex-col md:flex-row w-full items-start md:items-center justify-between gap-2 md:gap-4">
+          <div className="flex flex-row w-full items-center justify-between gap-2">
             <span className="text-purple-400 font-mono text-xs animate-pulse flex items-center gap-2 drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">
               <MapPin className="w-4 h-4" /> AWAITING TACTICAL PIN...
             </span>
@@ -269,7 +269,7 @@ export default function HelpBar() {
             </button>
           </div>
         ) : (
-          <div className="flex flex-col md:flex-row w-full items-start md:items-center justify-between gap-2 md:gap-4">
+          <div className="flex flex-row w-full items-center justify-between gap-2">
             <span className="text-emerald-400 font-mono text-xs flex items-center gap-2 drop-shadow-[0_0_8px_rgba(16,185,129,0.6)]">
               <MapPin className="w-4 h-4" /> LOCKED: {userCoords?.lat.toFixed(3)}, {userCoords?.lng.toFixed(3)}
             </span>
