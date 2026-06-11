@@ -39,13 +39,6 @@ export default function Home() {
           <ActionPanel />
         </div>
 
-        {/* DESKTOP ONLY — HelpBar bottom left */}
-        <div className="hidden md:block absolute bottom-20 left-18 right-[400px] lg:right-[450px] pointer-events-none z-50">
-          <div className="w-full pointer-events-auto">
-            <HelpBar />
-          </div>
-        </div>
-
         {/* ============================================================ */}
         {/* MOBILE ONLY — ActionPanel scrollable middle zone             */}
         {/* top-[76px] = logo height | bottom-[160px] = HelpBar space   */}
@@ -55,8 +48,8 @@ export default function Home() {
           <ActionPanel />
         </div>
 
-        {/* MOBILE ONLY — HelpBar pinned at very bottom, no footer below */}
-        <div className="md:hidden absolute bottom-0 left-0 right-0 pointer-events-auto z-50">
+        {/* HelpBar — Mobile + Desktop combined */}
+        <div className="absolute bottom-0 left-0 right-0 md:bottom-20 md:left-18 md:right-[400px] lg:md:right-[450px] pointer-events-auto z-50 px-0 md:px-0">
           <HelpBar />
         </div>
 
