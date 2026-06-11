@@ -41,8 +41,6 @@ export default function Home() {
 
         {/* ============================================================ */}
         {/* MOBILE ONLY — ActionPanel scrollable middle zone             */}
-        {/* top-[76px] = logo height | bottom-[160px] = HelpBar space   */}
-        {/* Map is visible through the semi-transparent widget cards     */}
         {/* ============================================================ */}
         <div className="md:hidden absolute top-[45%] left-2 right-2 bottom-[155px] overflow-y-auto scrollbar-hide pointer-events-auto z-40 px-2">
           <ActionPanel />
