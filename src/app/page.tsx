@@ -49,7 +49,7 @@ export default function Home() {
         </div>
 
         {/* HelpBar — Mobile + Desktop combined */}
-        <div className="absolute bottom-0 left-0 right-0 md:bottom-20 md:left-18 md:right-[400px] lg:md:right-[450px] pointer-events-auto z-50 px-0 md:px-0">
+        <div className="absolute bottom-0 left-0 right-0 md:bottom-20 md:left-18 md:right-[400px] lg:right-[450px] pointer-events-auto z-50 px-0 md:px-0">
           <HelpBar />
         </div>
 
